@@ -1,0 +1,85 @@
+Execution log  :  task3_2_tool_offset_compensation.py
+Interpreter    :  Python 3.11.15
+Executed on    :  2026-10-02 10:14:18 UTC
+Exit status    :  (see end of file)
+================================================================================
+
+##############################################################################
+# TASK 3.2 - TOOL OFFSET / CUTTER RADIUS COMPENSATION : VERIFICATION RUN
+##############################################################################
+
+==============================================================================
+TEST CASE 1 - TURNING, tool nose radius compensation
+==============================================================================
+  Insert nose radius R      : 0.8 mm
+  Imaginary tip vector (Z,X): (-0.7071, -0.7071)  [Fanuc tip no. 3]
+  Taper angle in the profile: 26.57 deg
+------------------------------------------------------------------------------
+Nose-centre path (what the control actually drives with G41/G42)
+------------------------------------------------------------------------------
+  #    PROGRAMMED Z  PROGRAMMED X       COMPENSATED Z   COMPENSATED X
+  0          0.0000       15.0000              0.0000         15.8000
+  1        -20.0000       15.0000            -19.8111         15.8000
+  2        -40.0000       25.0000            -39.8111         25.8000
+  3        -70.0000       25.0000            -70.0000         25.8000
+
+------------------------------------------------------------------------------
+Imaginary-tip path (what must be programmed if G40, i.e. no comp)
+------------------------------------------------------------------------------
+  #    PROGRAMMED Z  PROGRAMMED X       COMPENSATED Z   COMPENSATED X
+  0          0.0000       15.0000             -0.5657         15.2343
+  1        -20.0000       15.0000            -20.3768         15.2343
+  2        -40.0000       25.0000            -40.3768         25.2343
+  3        -70.0000       25.0000            -70.5657         25.2343
+
+  >>> Maximum profile error if compensation were OMITTED : 0.2343 mm
+      (this is the classic undercut on the tapered face)
+
+   >>> SANITY CHECKS PASSED
+
+==============================================================================
+TEST CASE 2 - MILLING, rectangular pocket (G41, inside contour)
+==============================================================================
+  Pocket size        : 60.0 x 40.0 mm
+  Cutter diameter    : ø10.0 mm  (radius 5.0 mm)
+------------------------------------------------------------------------------
+Cutter-centre path
+------------------------------------------------------------------------------
+  #    PROGRAMMED X  PROGRAMMED Y       COMPENSATED X   COMPENSATED Y
+  0          0.0000        0.0000              5.0000          5.0000
+  1         60.0000        0.0000             55.0000          5.0000
+  2         60.0000       40.0000             55.0000         35.0000
+  3          0.0000       40.0000              5.0000         35.0000
+  4                                            5.0000          5.0000
+
+  Cutter-centre rectangle : 50.0000 x 30.0000 mm
+  Expected (W-D) x (H-D)  : 50.0000 x 30.0000 mm
+   >>> SANITY CHECKS PASSED - offset is exactly one radius from every wall
+
+==============================================================================
+TEST CASE 3 - MILLING, outside contour (G42) and circular pocket
+==============================================================================
+  Cutter diameter : ø12.0 mm, outside contour, G42
+------------------------------------------------------------------------------
+Cutter-centre path around the outside of the part
+------------------------------------------------------------------------------
+  #    PROGRAMMED X  PROGRAMMED Y       COMPENSATED X   COMPENSATED Y
+  0          0.0000        0.0000             -6.0000         -6.0000
+  1         80.0000        0.0000             86.0000         -6.0000
+  2         80.0000       50.0000             86.0000         53.7082
+  3         40.0000       70.0000             40.0000         76.7082
+  4          0.0000       50.0000             -6.0000         53.7082
+  5                                           -6.0000         -6.0000
+
+   >>> every cutter-centre point is at least one radius clear of the profile
+
+  Circular pocket ø40.0 mm with a ø10.0 mm cutter
+  Cutter-centre radius : min 14.9809 / max 14.9809 mm
+  Expected             : 15.0000 mm
+   >>> SANITY CHECKS PASSED
+
+==============================================================================
+ALL THREE TEST CASES COMPLETED SUCCESSFULLY
+==============================================================================
+================================================================================
+PROCESS EXIT CODE: 0

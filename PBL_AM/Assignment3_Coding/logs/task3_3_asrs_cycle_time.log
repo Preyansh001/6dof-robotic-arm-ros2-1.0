@@ -1,0 +1,111 @@
+Execution log  :  task3_3_asrs_cycle_time.py
+Interpreter    :  Python 3.11.15
+Executed on    :  2026-10-02 10:14:18 UTC
+Exit status    :  (see end of file)
+================================================================================
+
+####################################################################################
+# TASK 3.3 - AS/RS CYCLE TIME ALGORITHM : TEST VERIFICATION RUN
+####################################################################################
+
+====================================================================================
+AS/RS CYCLE-TIME ANALYSIS  -  TEST CASE 1 - Tall unit-load rack (vertical dominant)
+====================================================================================
+  Rack length  L   =    60.00 m      Horizontal speed Vy =  2.00 m/s
+  Rack height  H   =    18.00 m      Vertical speed   Vz =  0.50 m/s
+  P/D time     tpd =    15.00 s      Availability        =  95.0 %
+------------------------------------------------------------------------------------
+  th = L/Vy =  30.00 s        tv = H/Vz =  36.00 s
+  T  = max(th,tv) =  36.00 s    b = min/T = 0.8333
+------------------------------------------------------------------------------------
+  RANDOMIZED STORAGE (Bozer & White)
+    E(SC) travel      = T(1 + b^2/3)             =    44.33 s
+    E(DC) travel      = T(4/3 + b^2/2 - b^3/30)  =    59.81 s
+    SC cycle  (+2 tpd)                           =    74.33 s   ->    46.0 transactions/h
+    DC cycle  (+4 tpd)                           =   119.81 s   ->    57.1 transactions/h
+    Throughput gain of dual over single command  =   24.1 %
+------------------------------------------------------------------------------------
+  MONTE-CARLO VERIFICATION OF THE ANALYTICAL FORMULAE (400 000 trials)
+    E(SC): analytical  44.333 s   simulated  44.356 s   deviation  0.05 %
+    E(DC): analytical  59.806 s   simulated  59.865 s   deviation  0.10 %
+    >>> both models agree with the simulation to better than 1 %
+------------------------------------------------------------------------------------
+  DEDICATED STORAGE - named locations
+    Location          y, m    z, m   SC cycle, s   SC rate, /h
+    A-01-01           3.00    1.20         34.80          98.3
+    A-30-08          45.00   14.40         87.60          39.0
+    A-20-05          30.00    9.00         66.00          51.8
+    DC cycle  A-01-01 (store) -> A-30-08 (retrieve) = 117.60 s  -> 58.2 transactions/h
+====================================================================================
+
+====================================================================================
+AS/RS CYCLE-TIME ANALYSIS  -  TEST CASE 2 - Long mini-load rack (horizontal dominant)
+====================================================================================
+  Rack length  L   =    90.00 m      Horizontal speed Vy =  1.20 m/s
+  Rack height  H   =     6.00 m      Vertical speed   Vz =  0.80 m/s
+  P/D time     tpd =     8.00 s      Availability        =  90.0 %
+------------------------------------------------------------------------------------
+  th = L/Vy =  75.00 s        tv = H/Vz =   7.50 s
+  T  = max(th,tv) =  75.00 s    b = min/T = 0.1000
+------------------------------------------------------------------------------------
+  RANDOMIZED STORAGE (Bozer & White)
+    E(SC) travel      = T(1 + b^2/3)             =    75.25 s
+    E(DC) travel      = T(4/3 + b^2/2 - b^3/30)  =   100.37 s
+    SC cycle  (+2 tpd)                           =    91.25 s   ->    35.5 transactions/h
+    DC cycle  (+4 tpd)                           =   132.37 s   ->    49.0 transactions/h
+    Throughput gain of dual over single command  =   37.9 %
+------------------------------------------------------------------------------------
+  MONTE-CARLO VERIFICATION OF THE ANALYTICAL FORMULAE (400 000 trials)
+    E(SC): analytical  75.250 s   simulated  75.396 s   deviation  0.19 %
+    E(DC): analytical 100.372 s   simulated 100.462 s   deviation  0.09 %
+    >>> both models agree with the simulation to better than 1 %
+------------------------------------------------------------------------------------
+  DEDICATED STORAGE - named locations
+    Location          y, m    z, m   SC cycle, s   SC rate, /h
+    B-05-02          12.00    2.00         36.00          90.0
+    B-40-06          72.00    5.00        136.00          23.8
+    DC cycle  B-05-02 (store) -> B-40-06 (retrieve) = 152.00 s  -> 42.6 transactions/h
+====================================================================================
+
+====================================================================================
+AS/RS CYCLE-TIME ANALYSIS  -  TEST CASE 3 - Square-in-time rack (b = 1, limiting case)
+====================================================================================
+  Rack length  L   =    40.00 m      Horizontal speed Vy =  2.00 m/s
+  Rack height  H   =    10.00 m      Vertical speed   Vz =  0.50 m/s
+  P/D time     tpd =    10.00 s      Availability        = 100.0 %
+------------------------------------------------------------------------------------
+  th = L/Vy =  20.00 s        tv = H/Vz =  20.00 s
+  T  = max(th,tv) =  20.00 s    b = min/T = 1.0000
+------------------------------------------------------------------------------------
+  RANDOMIZED STORAGE (Bozer & White)
+    E(SC) travel      = T(1 + b^2/3)             =    26.67 s
+    E(DC) travel      = T(4/3 + b^2/2 - b^3/30)  =    36.00 s
+    SC cycle  (+2 tpd)                           =    46.67 s   ->    77.1 transactions/h
+    DC cycle  (+4 tpd)                           =    76.00 s   ->    94.7 transactions/h
+    Throughput gain of dual over single command  =   22.8 %
+------------------------------------------------------------------------------------
+  MONTE-CARLO VERIFICATION OF THE ANALYTICAL FORMULAE (400 000 trials)
+    E(SC): analytical  26.667 s   simulated  26.690 s   deviation  0.09 %
+    E(DC): analytical  36.000 s   simulated  36.034 s   deviation  0.09 %
+    >>> both models agree with the simulation to better than 1 %
+------------------------------------------------------------------------------------
+  DEDICATED STORAGE - named locations
+    Location          y, m    z, m   SC cycle, s   SC rate, /h
+    C-01-01           0.00    0.00         20.00         180.0
+    C-MAX            40.00   10.00         60.00          60.0
+    DC cycle  C-01-01 (store) -> C-MAX (retrieve) = 80.00 s  -> 90.0 transactions/h
+====================================================================================
+
+   >>> b = 1 limiting values confirmed analytically
+
+====================================================================================
+SUMMARY
+====================================================================================
+Case                                                      b     SC,s     DC,s   DC rate/h
+TEST CASE 1 - Tall unit-load rack (vertical dominant) 0.8333    74.33   119.81        57.1
+TEST CASE 2 - Long mini-load rack (horizontal dominant) 0.1000    91.25   132.37        49.0
+TEST CASE 3 - Square-in-time rack (b = 1, limiting case) 1.0000    46.67    76.00        94.7
+====================================================================================
+ALL TEST CASES COMPLETED SUCCESSFULLY
+================================================================================
+PROCESS EXIT CODE: 0

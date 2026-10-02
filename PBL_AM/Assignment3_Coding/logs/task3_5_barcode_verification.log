@@ -1,0 +1,151 @@
+Execution log  :  task3_5_barcode_verification.py
+Interpreter    :  Python 3.11.15
+Executed on    :  2026-10-02 10:14:19 UTC
+Exit status    :  (see end of file)
+================================================================================
+
+##############################################################################
+# TASK 3.5 - ADC BARCODE VERIFICATION TOOL : TEST VERIFICATION RUN
+##############################################################################
+
+  Validation date fixed at 2026-03-01 for reproducibility
+  Part master holds: BLK-A1234, SHF-T5500, PIN-L0099
+
+==============================================================================
+CHECK-CHARACTER SELF TEST (modulo 43)
+==============================================================================
+  data BLKA1234       -> check character 'T'
+  data SHFT5500010    -> check character 'E'
+  data 123456         -> check character 'L'
+   >>> check-character routine behaves as specified
+
+==============================================================================
+TEST CASE 1 - valid Code 39 scan, correct first operation
+==============================================================================
+------------------------------------------------------------------------------
+  goods-in scan of an engine block
+  RAW SCAN   : *BLKA12340102601150001238*
+  SYMBOLOGY  : CODE39
+  DECODED    : part=BLK-A1234  op=010  lot=260115  serial=000123  check=8
+      note   : part recognised: Engine cylinder block, 4-cyl
+      note   : operation 010 = Raw material receipt / goods-in inspection
+      note   : routing position correct (1 of 6)
+  RESULT     : ACCEPT - part may proceed
+------------------------------------------------------------------------------
+  same serial presented at the next operation
+  RAW SCAN   : *BLKA12340202601150001239*
+  SYMBOLOGY  : CODE39
+  DECODED    : part=BLK-A1234  op=020  lot=260115  serial=000123  check=9
+      note   : part recognised: Engine cylinder block, 4-cyl
+      note   : operation 020 = CNC rough turning
+      note   : routing position correct (2 of 6)
+  RESULT     : ACCEPT - part may proceed
+
+==============================================================================
+TEST CASE 2 - QR payload with a routing violation and a duplicate
+==============================================================================
+------------------------------------------------------------------------------
+  operation 060 presented while 030 is due
+  RAW SCAN   : PN=BLK-A1234|OP=060|LOT=260115|SN=000123
+  SYMBOLOGY  : QR
+  DECODED    : part=BLK-A1234  op=060  lot=260115  serial=000123
+      note   : part recognised: Engine cylinder block, 4-cyl
+      note   : operation 060 = In-line dimensional inspection
+      ERROR  : routing violation: operation 060 presented but operation 030 is the next one due (completed so far: 010-020)
+  RESULT     : REJECT - part diverted to the query bay
+------------------------------------------------------------------------------
+  operation 020 presented a second time
+  RAW SCAN   : PN=BLK-A1234|OP=020|LOT=260115|SN=000123
+  SYMBOLOGY  : QR
+  DECODED    : part=BLK-A1234  op=020  lot=260115  serial=000123
+      note   : part recognised: Engine cylinder block, 4-cyl
+      note   : operation 020 = CNC rough turning
+      ERROR  : duplicate scan: operation 020 has already been recorded for serial 000123
+  RESULT     : REJECT - part diverted to the query bay
+------------------------------------------------------------------------------
+  a different part, first operation
+  RAW SCAN   : PN=SHF-T5500|OP=010|LOT=260210|SN=004501
+  SYMBOLOGY  : QR
+  DECODED    : part=SHF-T5500  op=010  lot=260210  serial=004501
+      note   : part recognised: Transmission stepped shaft
+      note   : operation 010 = Raw material receipt / goods-in inspection
+      note   : routing position correct (1 of 4)
+  RESULT     : ACCEPT - part may proceed
+
+==============================================================================
+TEST CASE 3 - corrupted check character, unknown part, bad lot, junk
+==============================================================================
+------------------------------------------------------------------------------
+  one bit flipped in the check character
+  RAW SCAN   : *BLKA1234030260115000123B*
+  SYMBOLOGY  : CODE39
+  DECODED    : part=BLK-A1234  op=030  lot=260115  serial=000123  check=B
+      ERROR  : modulo-43 check character is 'B', expected 'A'
+  RESULT     : REJECT - part diverted to the query bay
+------------------------------------------------------------------------------
+  part not in the master
+  RAW SCAN   : PN=XXX-99999|OP=010|LOT=260115|SN=000001
+  SYMBOLOGY  : QR
+  DECODED    : part=XXX-99999  op=010  lot=260115  serial=000001
+      ERROR  : part number 'XXX-99999' is not in the part master
+  RESULT     : REJECT - part diverted to the query bay
+------------------------------------------------------------------------------
+  lot dated in the future
+  RAW SCAN   : PN=PIN-L0099|OP=010|LOT=270101|SN=000045
+  SYMBOLOGY  : QR
+  DECODED    : part=PIN-L0099  op=010  lot=270101  serial=000045
+      note   : part recognised: Aluminium locating pin
+      note   : operation 010 = Raw material receipt / goods-in inspection
+      note   : routing position correct (1 of 3)
+      ERROR  : lot date 2027-01-01 lies in the future
+  RESULT     : REJECT - part diverted to the query bay
+------------------------------------------------------------------------------
+  lot older than the 180-day shelf life
+  RAW SCAN   : PN=PIN-L0099|OP=010|LOT=240101|SN=000046
+  SYMBOLOGY  : QR
+  DECODED    : part=PIN-L0099  op=010  lot=240101  serial=000046
+      note   : part recognised: Aluminium locating pin
+      note   : operation 010 = Raw material receipt / goods-in inspection
+      note   : routing position correct (1 of 3)
+      ERROR  : lot is 790 days old, shelf life is 180 days
+  RESULT     : REJECT - part diverted to the query bay
+------------------------------------------------------------------------------
+  unreadable payload
+  RAW SCAN   : HELLO WORLD 12345
+  SYMBOLOGY  : UNKNOWN
+      ERROR  : payload matches neither the Code 39 nor the QR format
+  RESULT     : REJECT - part diverted to the query bay
+------------------------------------------------------------------------------
+  truncated Code 39 payload
+  RAW SCAN   : *SHORT*
+  SYMBOLOGY  : CODE39
+      ERROR  : wrong payload length: expected 24 data+check characters, got 5
+  RESULT     : REJECT - part diverted to the query bay
+
+==============================================================================
+SUMMARY OF ALL SCANS
+==============================================================================
+Scan                                  Result    Expected     Verdict
+valid Code 39, op 010                 ACCEPT      ACCEPT          OK
+valid Code 39, op 020 (next)          ACCEPT      ACCEPT          OK
+QR, out-of-sequence op                REJECT      REJECT          OK
+QR, duplicate scan                    REJECT      REJECT          OK
+QR, valid other part                  ACCEPT      ACCEPT          OK
+Code 39, bad check char               REJECT      REJECT          OK
+QR, unknown part                      REJECT      REJECT          OK
+QR, future lot date                   REJECT      REJECT          OK
+QR, expired lot                       REJECT      REJECT          OK
+junk payload                          REJECT      REJECT          OK
+Code 39, truncated                    REJECT      REJECT          OK
+------------------------------------------------------------------------------
+  Scans processed : 11
+  Accepted        : 3
+  Rejected        : 8
+
+  Routing history recorded by the validator:
+    BLK-A1234/260115/000123      operations completed: 010-020
+    SHF-T5500/260210/004501      operations completed: 010
+==============================================================================
+ALL TEST CASES COMPLETED SUCCESSFULLY
+================================================================================
+PROCESS EXIT CODE: 0

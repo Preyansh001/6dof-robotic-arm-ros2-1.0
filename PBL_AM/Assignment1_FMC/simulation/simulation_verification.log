@@ -1,0 +1,71 @@
+Execution log : toolpath_simulator.py
+Interpreter   : Python 3.11.15
+Executed on   : 2026-10-02 10:48:41 UTC
+================================================================================
+
+######################################################################################
+# ASSIGNMENT 1 - G/M-CODE TOOL PATH SIMULATION AND COLLISION VERIFICATION
+######################################################################################
+
+======================================================================================
+PROGRAM O0001 - turning_shaft.nc  (stepped transmission shaft)
+======================================================================================
+  Blocks interpreted into 83 elementary moves
+  Move breakdown : dwell = 2, feed = 14, rapid = 59, thread = 8
+  Tools used     : T0101, T0202, T0303, T0404
+  Z range swept  : -55.00 to 300.00 mm
+--------------------------------------------------------------------------------------
+  VERIFICATION RESULT :  PASS
+  No collisions, no envelope violations and no programming-practice
+  errors were detected.  The tool path is collision free.
+======================================================================================
+
+  tool path plot written to simulation/turning_toolpath.png
+
+======================================================================================
+PROGRAM O0002 - milling_plate.nc  (cover plate)
+======================================================================================
+  Blocks interpreted into 381 elementary moves
+  Move breakdown : feed = 292, rapid = 89
+  Tools used     : T01, T02, T03, T04
+  Z range swept  : -23.00 to 60.00 mm
+--------------------------------------------------------------------------------------
+  VERIFICATION RESULT :  PASS
+  No collisions, no envelope violations and no programming-practice
+  errors were detected.  The tool path is collision free.
+======================================================================================
+
+  tool path plot written to simulation/milling_toolpath.png
+
+======================================================================================
+NEGATIVE CONTROL - deliberately faulty programs that MUST be rejected
+======================================================================================
+  Faulty lathe program  : 1 collision(s) detected  -> CHECKER WORKING
+      N50: RAPID into material: at Z=-0.23 the tool is at radius 24.53 mm but material remains to radius 25.00 mm
+  Faulty mill program   : 3 fault(s) detected  -> CHECKER WORKING
+      N60: cutting move with no feed rate set
+      N60: cutting move with the spindle stopped
+      N50: RAPID into material at X-40.0 Y0.0 Z-1.00: stock still stands at Z=0.00
+  >>> the verifier correctly rejects known-bad programs, so the PASS
+      results reported above for O0001 and O0002 are meaningful.
+======================================================================================
+
+======================================================================================
+DIMENSIONAL CHECK OF THE SIMULATED PLATE
+======================================================================================
+  rectangular pocket floor     at X  -40.0 Y   0.0 : Z =   -6.00  (expected -6.00 +/- 0.25)  OK
+  circular pocket floor        at X   45.0 Y   0.0 : Z =   -6.00  (expected -6.00 +/- 0.25)  OK
+  faced top surface            at X    0.0 Y   0.0 : Z =   -0.50  (expected -0.50 +/- 0.25)  OK
+  uncut corner of the plate    at X  -78.0 Y -48.0 : Z =   -0.50  (expected -0.50 +/- 0.6)  OK
+  rect pocket, 2 mm INSIDE +X wall at X  -12.0 Y   0.0 : Z =   -6.00  (expected -6.00 +/- 0.25)  OK
+  rect pocket, 2 mm OUTSIDE +X wall at X   -8.0 Y   0.0 : Z =   -0.50  (expected -0.50 +/- 0.25)  OK
+  rect pocket, 2 mm INSIDE +Y wall at X  -40.0 Y  18.0 : Z =   -6.00  (expected -6.00 +/- 0.25)  OK
+  rect pocket, 2 mm OUTSIDE +Y wall at X  -40.0 Y  22.0 : Z =   -0.50  (expected -0.50 +/- 0.25)  OK
+  circ pocket, R18 (inside wall) at X   63.0 Y   0.0 : Z =   -6.00  (expected -6.00 +/- 0.25)  OK
+  circ pocket, R22 (outside wall) at X   67.0 Y   0.0 : Z =   -0.50  (expected -0.50 +/- 0.25)  OK
+  rect pocket, 2 mm OUTSIDE -Y wall at X  -55.0 Y -22.0 : Z =   -0.50  (expected -0.50 +/- 0.25)  OK
+======================================================================================
+
+OVERALL: ALL PROGRAMS VERIFIED COLLISION FREE
+================================================================================
+PROCESS EXIT CODE: 0

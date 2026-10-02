@@ -1,0 +1,133 @@
+Execution log  :  task3_4_agv_fleet_sizing.py
+Interpreter    :  Python 3.11.15
+Executed on    :  2026-10-02 10:14:19 UTC
+Exit status    :  (see end of file)
+================================================================================
+
+################################################################################
+# TASK 3.4 - AGV FLEET SIZING MODEL : TEST VERIFICATION RUN
+################################################################################
+
+================================================================================
+AGV FLEET SIZING  -  TEST CASE 1 - FMC raw-material loop (Assignment 1 cell)
+================================================================================
+  INPUTS
+    Loading time        TL =    0.600 min
+    Unloading time      TU =    0.500 min
+    Loaded distance     Ld =    140.0 m
+    Empty distance      Le =    110.0 m
+    Vehicle speed       Vc =     50.0 m/min
+    Demand              Rf =     22.0 deliveries/h
+    Availability        A  =    0.950
+    Traffic factor      Ft =    0.900
+--------------------------------------------------------------------------------
+  DELIVERY CYCLE TIME
+    Load                      =    0.600 min
+    Travel loaded  Ld/Vc      =    2.800 min
+    Unload                    =    0.500 min
+    Travel empty   Le/Vc      =    2.200 min
+    ------------------------------------
+    Tc                        =    6.100 min per delivery
+--------------------------------------------------------------------------------
+  FLEET CALCULATION
+    Workload   WL = Rf x Tc            =  134.200 vehicle-min per hour
+    Traffic factor actually used  Ft   =    0.900
+    Available time AT = 60 x A x Ft    =   51.300 min per vehicle per hour
+    Vehicles  n = WL / AT              =    2.616
+    >>> REQUIRED FLEET SIZE            =     3 AGVs  (rounded up)
+    Fleet utilisation                  =     87.2 %
+    Rate the fleet can actually serve  =    25.23 deliveries/h   (demand 22.0/h)
+================================================================================
+
+   >>> SANITY CHECKS PASSED for this case
+
+================================================================================
+AGV FLEET SIZING  -  TEST CASE 2 - High-demand assembly feed (congested)
+================================================================================
+  INPUTS
+    Loading time        TL =    1.000 min
+    Unloading time      TU =    0.750 min
+    Loaded distance     Ld =    320.0 m
+    Empty distance      Le =    280.0 m
+    Vehicle speed       Vc =     40.0 m/min
+    Demand              Rf =     35.0 deliveries/h
+    Availability        A  =    0.900
+    Traffic factor      Ft =    0.850
+--------------------------------------------------------------------------------
+  DELIVERY CYCLE TIME
+    Load                      =    1.000 min
+    Travel loaded  Ld/Vc      =    8.000 min
+    Unload                    =    0.750 min
+    Travel empty   Le/Vc      =    7.000 min
+    ------------------------------------
+    Tc                        =   16.750 min per delivery
+--------------------------------------------------------------------------------
+  FLEET CALCULATION
+    Workload   WL = Rf x Tc            =  586.250 vehicle-min per hour
+    Traffic factor actually used  Ft   =    0.850
+    Available time AT = 60 x A x Ft    =   45.900 min per vehicle per hour
+    Vehicles  n = WL / AT              =   12.772
+    >>> REQUIRED FLEET SIZE            =    13 AGVs  (rounded up)
+    Fleet utilisation                  =     98.2 %
+    Rate the fleet can actually serve  =    35.62 deliveries/h   (demand 35.0/h)
+================================================================================
+
+   >>> SANITY CHECKS PASSED for this case
+
+================================================================================
+AGV FLEET SIZING  -  TEST CASE 3 - Traffic factor estimated by iteration
+================================================================================
+  INPUTS
+    Loading time        TL =    0.750 min
+    Unloading time      TU =    0.750 min
+    Loaded distance     Ld =    200.0 m
+    Empty distance      Le =    150.0 m
+    Vehicle speed       Vc =     45.0 m/min
+    Demand              Rf =     40.0 deliveries/h
+    Availability        A  =    0.920
+    Traffic factor      Ft = estimated
+--------------------------------------------------------------------------------
+  DELIVERY CYCLE TIME
+    Load                      =    0.750 min
+    Travel loaded  Ld/Vc      =    4.444 min
+    Unload                    =    0.750 min
+    Travel empty   Le/Vc      =    3.333 min
+    ------------------------------------
+    Tc                        =    9.278 min per delivery
+--------------------------------------------------------------------------------
+  FLEET CALCULATION
+    Workload   WL = Rf x Tc            =  371.111 vehicle-min per hour
+    Traffic factor actually used  Ft   =    0.600   (converged in 3 iterations)
+    Available time AT = 60 x A x Ft    =   33.120 min per vehicle per hour
+    Vehicles  n = WL / AT              =   11.205
+    >>> REQUIRED FLEET SIZE            =    12 AGVs  (rounded up)
+    Fleet utilisation                  =     93.4 %
+    Rate the fleet can actually serve  =    42.84 deliveries/h   (demand 40.0/h)
+================================================================================
+
+   >>> SANITY CHECKS PASSED for this case
+
+================================================================================
+MONOTONICITY CHECK - fleet size against rising demand (case 1 geometry)
+================================================================================
+  Demand, deliveries/h     n exact   AGVs required
+                     5       0.595               1
+                    10       1.189               2
+                    20       2.378               3
+                    30       3.567               4
+                    40       4.756               5
+                    60       7.135               8
+                    80       9.513              10
+   >>> fleet size rises monotonically with demand
+
+================================================================================
+SUMMARY
+================================================================================
+Case                                                       Tc,min   AGVs
+TEST CASE 1 - FMC raw-material loop (Assignment 1 cell)     6.100      3
+TEST CASE 2 - High-demand assembly feed (congested)        16.750     13
+TEST CASE 3 - Traffic factor estimated by iteration         9.278     12
+================================================================================
+ALL TEST CASES COMPLETED SUCCESSFULLY
+================================================================================
+PROCESS EXIT CODE: 0
